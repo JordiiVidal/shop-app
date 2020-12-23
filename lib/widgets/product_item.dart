@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:shop_app/models/product.dart';
+import 'package:provider/provider.dart';
+
+import 'package:shop_app/providers/product.dart';
 import 'package:shop_app/pages/product_detail_page.dart';
 
 class ProductItem extends StatelessWidget {
-  final Product product;
-  const ProductItem({Key key, this.product}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
+    final Product product = Provider.of<Product>(context, listen: false);
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: GestureDetector(
-        onTap: () => Navigator.of(context).push(
-          MaterialPageRoute(
-              builder: (_) => ProductDetailPage(product: product)),
-        ),
+        onTap: () => Navigator.of(context)
+            .pushNamed(ProductDetailPage.routeName, arguments: product.id),
         child: GridTile(
           child: Image.network(
             product.imageUrl,
@@ -22,26 +20,29 @@ class ProductItem extends StatelessWidget {
           ),
           footer: GridTileBar(
             backgroundColor: Colors.black45,
-            leading: IconButton(
-              icon: Icon(
-                Icons.favorite,
-                size: 18,
-                color: Theme.of(context).accentColor,
+            leading: Consumer<Product>(
+              //only reruns this widget
+              builder: (ctx, product, _) => IconButton(
+                icon: Icon(
+                  product.isFavorite ? Icons.favorite : Icons.favorite_border,
+                  size: 18,
+                  color: Theme.of(context).accentColor,
+                ),
+                onPressed: () => product.toggleFavorite(),
               ),
-              onPressed: null,
             ),
             title: Text(
               product.title,
               textAlign: TextAlign.center,
             ),
-            trailing: IconButton(
-              icon: Icon(
-                Icons.shopping_cart,
-                size: 18,
-                color: Theme.of(context).accentColor,
-              ),
-              onPressed: null,
-            ),
+            // trailing: IconButton(
+            //   icon: Icon(
+            //     Icons.shopping_cart,
+            //     size: 18,
+            //     color: Theme.of(context).accentColor,
+            //   ),
+            //   onPressed: null,
+            // ),
           ),
         ),
       ),
