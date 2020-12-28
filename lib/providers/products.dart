@@ -1,5 +1,50 @@
 import 'package:flutter/material.dart';
-import 'package:shop_app/providers/product.dart';
+import 'package:shop_app/providers/cart.dart';
+
+class ProductForm {
+  String title;
+  String description;
+  double price;
+  String imageUrl;
+
+  ProductForm({
+    this.title,
+    this.description,
+    this.price,
+    this.imageUrl,
+  });
+}
+
+class Product with ChangeNotifier {
+  final String id;
+  final String title;
+  final String description;
+  final double price;
+  final String imageUrl;
+  bool isFavorite;
+
+  Product({
+    @required this.id,
+    @required this.title,
+    this.description,
+    @required this.price,
+    @required this.imageUrl,
+    this.isFavorite = false,
+  });
+
+  factory Product.fromProductForm(ProductForm form) => Product(
+        id: uniqueId,
+        title: form.title,
+        price: form.price,
+        imageUrl: form.imageUrl,
+        description: form.description,
+      );
+
+  void toggleFavorite() {
+    this.isFavorite = !this.isFavorite;
+    notifyListeners();
+  }
+}
 
 class Products with ChangeNotifier {
   List<Product> _products = [
@@ -44,8 +89,19 @@ class Products with ChangeNotifier {
   Product productById(String id) =>
       _products.firstWhere((element) => element.id == id);
 
-  void addProduct(Product product) {
-    _products.add(product);
+  void addProduct(ProductForm productForm) {
+    final Product newProduct = Product.fromProductForm(productForm);
+    _products.add(newProduct);
     notifyListeners();
+  }
+
+  bool editProduct(String idProduct, ProductForm productForm) {
+    final Product editedProduct = Product.fromProductForm(productForm);
+    final productIndex =
+        _products.indexWhere((element) => element.id == idProduct);
+    if (productIndex <= 0 || productIndex == null) return false;
+    _products[productIndex] = editedProduct;
+    notifyListeners();
+    return true;
   }
 }

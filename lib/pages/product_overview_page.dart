@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shop_app/pages/shopping_cart_page.dart';
+import 'package:shop_app/widgets/app_drawer.dart';
 import 'package:shop_app/widgets/badge.dart';
 
 import 'package:shop_app/widgets/products_grid.dart';
@@ -7,6 +8,7 @@ import 'package:shop_app/widgets/products_grid.dart';
 enum FilterOptions { Favourites, All }
 
 class ProductOverviewPage extends StatefulWidget {
+  static const routeName = '/';
   @override
   _ProductOverviewPageState createState() => _ProductOverviewPageState();
 }
@@ -16,6 +18,7 @@ class _ProductOverviewPageState extends State<ProductOverviewPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: AppDrawer(),
       appBar: AppBar(
         title: Text('SHOP APP'),
         actions: [
@@ -26,7 +29,7 @@ class _ProductOverviewPageState extends State<ProductOverviewPage> {
                 onPressed: () =>
                     Navigator.of(context).pushNamed(ShoppingCartPage.routeName),
               ),
-             Badge(),
+              Badge(),
             ],
           ),
           PopupMenuButton(

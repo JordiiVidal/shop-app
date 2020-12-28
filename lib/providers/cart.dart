@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shop_app/providers/product.dart';
+import 'package:shop_app/providers/products.dart';
 
 String get uniqueId => DateTime.now().toString();
 
@@ -55,6 +55,23 @@ class Cart with ChangeNotifier {
 
   void removeProductCart(String id) {
     _cart.remove(id);
+    notifyListeners();
+  }
+
+  void removeSingleProduct(String id) {
+    if (!_cart.containsKey(id)) return;
+
+    print(_cart[id].quantity);
+    if (_cart[id].quantity > 1) {
+      _cart[id].lessQuantity();
+    } else {
+      _cart.remove(id);
+    }
+    notifyListeners();
+  }
+
+  void clearCart() {
+    _cart = {};
     notifyListeners();
   }
 }

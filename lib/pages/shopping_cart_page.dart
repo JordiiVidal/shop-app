@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/providers/cart.dart';
+import 'package:shop_app/providers/orders.dart';
 import 'package:shop_app/widgets/cart_item.dart';
 
 class ShoppingCartPage extends StatelessWidget {
@@ -23,30 +24,38 @@ class ShoppingCartPage extends StatelessWidget {
               ),
             ),
           ),
-          Container(
-            height: 100,
-            width: double.infinity,
-            padding: const EdgeInsets.all(20),
-            child: Card(
-              elevation: 4,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Text(
-                    'TOTAL',
-                    style: TextStyle(fontSize: 23),
-                  ),
-                  Chip(
-                    label: Text(
-                      '${cart.totalAmount} €',
-                      style: TextStyle(color: Colors.white),
+          GestureDetector(
+            onTap: () {
+              Provider.of<Orders>(context, listen: false)
+                  .addOrder(cart.cart.values.toList(), cart.totalAmount);
+              cart.clearCart();
+              Navigator.pop(context);
+            },
+            child: Container(
+              height: 100,
+              width: double.infinity,
+              padding: const EdgeInsets.all(20),
+              child: Card(
+                elevation: 4,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Text(
+                      'TOTAL',
+                      style: TextStyle(fontSize: 23),
                     ),
-                    backgroundColor: Theme.of(context).primaryColor,
-                  ),
-                ],
+                    Chip(
+                      label: Text(
+                        '${cart.totalAmount} €',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      backgroundColor: Theme.of(context).primaryColor,
+                    ),
+                  ],
+                ),
               ),
             ),
-          )
+          ),
         ],
       ),
     );
