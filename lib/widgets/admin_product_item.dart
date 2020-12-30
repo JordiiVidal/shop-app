@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:shop_app/models/product.dart';
 import 'package:shop_app/pages/edit_product_page.dart';
-import 'package:shop_app/providers/products.dart';
 
 class AdminProductItem extends StatelessWidget {
   final Product product;

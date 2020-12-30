@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shop_app/providers/cart.dart';
+import 'package:shop_app/tools/helpers.dart';
 
-String get uniqueId => DateTime.now().toString();
 
 class OrderItem {
   final String id;

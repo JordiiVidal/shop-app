@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:shop_app/providers/products.dart';
+import 'package:shop_app/models/product.dart';
+import 'package:shop_app/tools/helpers.dart';
 
-String get uniqueId => DateTime.now().toString();
 
 class CartProduct {
   String id;
