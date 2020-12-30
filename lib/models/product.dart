@@ -1,5 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:shop_app/tools/helpers.dart';
+
+ProductForm productFormFromJson(String str) => ProductForm.fromJson(json.decode(str));
+
+String productFormToJson(ProductForm data) => json.encode(data.toJson());
 
 class ProductForm {
   String title;
@@ -13,7 +19,27 @@ class ProductForm {
     this.price,
     this.imageUrl,
   });
+
+  factory ProductForm.fromJson(Map<String, dynamic> json) => ProductForm(
+        price: json["price"],
+        title: json["title"],
+        description: json["description"],
+        imageUrl: json["image_url"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "title": title,
+        "description": description,
+        "price": price.toString(),
+        "image_url": imageUrl,
+      };
 }
+
+
+
+Product productFromJson(String str) => Product.fromJson(json.decode(str));
+
+String productToJson(Product data) => json.encode(data.toJson());
 
 class Product with ChangeNotifier {
   final String id;
@@ -32,8 +58,8 @@ class Product with ChangeNotifier {
     this.isFavorite = false,
   });
 
-  factory Product.fromProductForm(ProductForm form) => Product(
-        id: uniqueId,
+  factory Product.fromProductForm(ProductForm form, String id) => Product(
+        id: id,
         title: form.title,
         price: form.price,
         imageUrl: form.imageUrl,
@@ -53,9 +79,9 @@ class Product with ChangeNotifier {
         "id": id,
         "title": title,
         "description": description,
-        "price": price,
+        "price": price.toString(),
         "image_url": imageUrl,
-        "is_favorite": isFavorite ? 1 : 0
+        "is_favorite": isFavorite ? "1" : "0"
       };
 
   void toggleFavorite() {
