@@ -10,6 +10,9 @@ class AdminProductsPage extends StatelessWidget {
   static const routeName = '/admin';
   const AdminProductsPage({Key key}) : super(key: key);
 
+  Future<void> _refreshProducts(BuildContext context) async =>
+      await Provider.of<Products>(context, listen: false).fetchProducts();
+
   @override
   Widget build(BuildContext context) {
     final productsData = Provider.of<Products>(context);
@@ -28,15 +31,19 @@ class AdminProductsPage extends StatelessWidget {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8),
-        child: ListView.builder(
-          itemCount: products.length,
-          itemBuilder: (_, index) => Column(
-            children: [
-              AdminProductItem(product: products[index]),
-              Divider(),
-            ],
+      body: RefreshIndicator(
+        onRefresh: () => _refreshProducts(context),
+        backgroundColor: Colors.black26,
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: ListView.builder(
+            itemCount: products.length,
+            itemBuilder: (_, index) => Column(
+              children: [
+                AdminProductItem(product: products[index]),
+                Divider(),
+              ],
+            ),
           ),
         ),
       ),

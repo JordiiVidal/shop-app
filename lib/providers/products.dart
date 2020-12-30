@@ -5,6 +5,9 @@ import 'package:shop_app/models/product.dart';
 import 'package:http/http.dart' as http;
 
 class Products with ChangeNotifier {
+  static const url =
+      'https://flutter-shop-app-49175-default-rtdb.firebaseio.com/products.json';
+
   List<Product> _products = [];
 
   List<Product> get products => [..._products];
@@ -14,9 +17,25 @@ class Products with ChangeNotifier {
   Product productById(String id) =>
       _products.firstWhere((element) => element.id == id);
 
+  Future<void> fetchProducts() async {
+    try {
+      final response = await http.get(url);
+      final data = json.decode(response.body);
+      if (data != null) {
+        final List<Product> loadedProducts = [];
+        data.forEach((key, value) {
+          final p = Product.fromJson(value, key);
+          loadedProducts.add(p);
+        });
+        _products = loadedProducts;
+      }
+      notifyListeners();
+    } catch (e) {
+      throw (e);
+    }
+  }
+
   Future<void> addProduct(ProductForm productForm) async {
-    const url =
-        'https://flutter-shop-app-49175-default-rtdb.firebaseio.com/products.json';
     try {
       final response =
           await http.post(url, body: productFormToJson(productForm));

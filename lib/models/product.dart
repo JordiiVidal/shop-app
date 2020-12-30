@@ -1,9 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:shop_app/tools/helpers.dart';
-
-ProductForm productFormFromJson(String str) => ProductForm.fromJson(json.decode(str));
 
 String productFormToJson(ProductForm data) => json.encode(data.toJson());
 
@@ -20,13 +17,6 @@ class ProductForm {
     this.imageUrl,
   });
 
-  factory ProductForm.fromJson(Map<String, dynamic> json) => ProductForm(
-        price: json["price"],
-        title: json["title"],
-        description: json["description"],
-        imageUrl: json["image_url"],
-      );
-
   Map<String, dynamic> toJson() => {
         "title": title,
         "description": description,
@@ -35,9 +25,8 @@ class ProductForm {
       };
 }
 
-
-
-Product productFromJson(String str) => Product.fromJson(json.decode(str));
+Product productFromJson(String str, String id) =>
+    Product.fromJson(json.decode(str), id);
 
 String productToJson(Product data) => json.encode(data.toJson());
 
@@ -66,9 +55,9 @@ class Product with ChangeNotifier {
         description: form.description,
       );
 
-  factory Product.fromJson(Map<String, dynamic> json) => Product(
-        id: json["id"],
-        price: json["price"],
+  factory Product.fromJson(Map<String, dynamic> json, String id) => Product(
+        id: id,
+        price: double.parse(json["price"]),
         title: json["title"],
         description: json["description"],
         imageUrl: json["image_url"],
