@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 
 class Products with ChangeNotifier {
   static const url =
-      'https://flutter-shop-app-49175-default-rtdb.firebaseio.com/products.json';
+      'https://flutter-shop-app-49175-default-rtdb.firebaseio.com/';
 
   List<Product> _products = [];
 
@@ -19,7 +19,7 @@ class Products with ChangeNotifier {
 
   Future<void> fetchProducts() async {
     try {
-      final response = await http.get(url);
+      final response = await http.get(url + 'products.json');
       final data = json.decode(response.body);
       if (data != null) {
         final List<Product> loadedProducts = [];
@@ -37,8 +37,8 @@ class Products with ChangeNotifier {
 
   Future<void> addProduct(ProductForm productForm) async {
     try {
-      final response =
-          await http.post(url, body: productFormToJson(productForm));
+      final response = await http.post(url + 'products.json',
+          body: productFormToJson(productForm));
       final String id =
           json.decode(response.body)['name']; //{name : id-firebase}
       final Product newProduct = Product.fromProductForm(productForm, id);
@@ -49,14 +49,40 @@ class Products with ChangeNotifier {
     }
   }
 
-  bool editProduct(String idProduct, ProductForm productForm) {
-    final Product editedProduct =
-        Product.fromProductForm(productForm, idProduct);
-    final productIndex =
-        _products.indexWhere((element) => element.id == idProduct);
-    if (productIndex <= 0 || productIndex == null) return false;
-    _products[productIndex] = editedProduct;
-    notifyListeners();
-    return true;
+  Future<bool> editProduct(String idProduct, ProductForm productForm) async {
+    try {
+      final Product editedProduct =
+          Product.fromProductForm(productForm, idProduct);
+      final productIndex =
+          _products.indexWhere((element) => element.id == idProduct);
+      print(productIndex);
+      if (productIndex == null || productIndex < 0) return false;
+      _products[productIndex] = editedProduct;
+      await http.patch(
+        url + 'products/$idProduct.json',
+        body: productFormToJson(productForm),
+      );
+      notifyListeners();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> deleteProduct(String idProduct) async {
+    try {
+      final productIndex =
+          _products.indexWhere((element) => element.id == idProduct);
+      if (productIndex == null || productIndex < 0) return false;
+      _products.removeAt(productIndex);
+      await http.delete(
+        url + 'products/$idProduct.json',
+      );
+
+      notifyListeners();
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 }

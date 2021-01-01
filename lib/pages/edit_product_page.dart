@@ -17,6 +17,7 @@ class _EditProductPageState extends State<EditProductPage> {
   final _imageUrlController = TextEditingController();
   final _imageFocus = FocusNode();
   final _formKey = GlobalKey<FormState>();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   ProductForm _newProductForm = ProductForm();
   bool _isInit = true;
   Product _editProduct;
@@ -52,24 +53,26 @@ class _EditProductPageState extends State<EditProductPage> {
     _imageFocus.dispose();
   }
 
-  void saveButton(BuildContext context) {
+  void saveButton(BuildContext context) async {
     bool isValid = _formKey.currentState.validate();
     if (!isValid) return;
     _formKey.currentState.save();
-    bool edited = Provider.of<Products>(context, listen: false)
+    bool edited = await Provider.of<Products>(context, listen: false)
         .editProduct(idProduct, _newProductForm);
     if (!edited) {
-      Scaffold.of(context).showSnackBar(
+      _scaffoldKey.currentState.removeCurrentSnackBar();
+      _scaffoldKey.currentState.showSnackBar(
         SnackBar(content: Text('Please check all fields and try again')),
       );
     } else {
-      Navigator.pop(context);
+      Navigator.pop(context, true);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.save_alt),
         onPressed: () => saveButton(context),
